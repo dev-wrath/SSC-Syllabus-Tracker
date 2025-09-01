@@ -1,0 +1,5 @@
+{
+  "name": "SSC Syllabus Tracker",
+  "description": "A comprehensive syllabus tracker for SSC subjects, allowing users to monitor their progress topic-wise with daily, weekly, and monthly tracking through intuitive charts and progress bars.",
+  "requestFramePermissions": []
+}
