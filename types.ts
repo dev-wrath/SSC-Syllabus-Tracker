@@ -30,3 +30,8 @@ export interface SyllabusStats {
   notStartedTopics: number;
   overallCompletion: number;
 }
+
+export interface User {
+  name: string;
+  email: string;
+}

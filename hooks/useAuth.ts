@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
-interface User {
-  name: string;
-  email: string;
-}
+import type { User } from '../types';
 
 const FAKE_DB_KEY = 'fakeUserDB';
 const SESSION_KEY = 'userSession';
@@ -82,12 +78,28 @@ export const useAuth = () => {
   }, []);
 
   const loginWithGoogle = useCallback(async (): Promise<{ success: boolean; message: string }> => {
-    // This simulates the OAuth popup and response.
+    // This simulates the OAuth popup and response with a persistent user.
      return new Promise(resolve => {
       setTimeout(() => {
-        const googleUser = { name: 'Siddhant (Google)', email: 'siddhant@example.com' };
-        setUser(googleUser);
-        resolve({ success: true, message: 'Login successful!' });
+        try {
+          const dbString = window.localStorage.getItem(FAKE_DB_KEY);
+          const db = dbString ? JSON.parse(dbString) : {};
+          const googleEmail = 'siddhant.google@example.com';
+          let googleUser = db[googleEmail];
+          
+          if (!googleUser) {
+            // Create a google user if it doesn't exist in our fake DB
+            googleUser = { name: 'Siddhant (Google)', email: googleEmail, password: '---' }; // Password not used for Google sign-in
+            db[googleEmail] = googleUser;
+            window.localStorage.setItem(FAKE_DB_KEY, JSON.stringify(db));
+          }
+
+          setUser({ name: googleUser.name, email: googleEmail });
+          resolve({ success: true, message: 'Login successful!' });
+        } catch(e) {
+          console.error("Failed during Google login simulation", e);
+          resolve({ success: false, message: 'An error occurred during Google login.' });
+        }
       }, 500);
     });
   }, []);

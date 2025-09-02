@@ -8,6 +8,7 @@ import { PlusIcon } from './components/icons';
 import { useAuth } from './hooks/useAuth';
 
 const App: React.FC = () => {
+  const { user, ...authProps } = useAuth();
   const { 
     subjects, 
     updateTopicStatus, 
@@ -16,7 +17,7 @@ const App: React.FC = () => {
     addSubject,
     addTopic,
     deleteTopic,
-  } = useSyllabus();
+  } = useSyllabus(user);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [theme, setTheme] = useState(() => {
@@ -25,8 +26,6 @@ const App: React.FC = () => {
     }
     return 'dark';
   });
-
-  const { user, ...authProps } = useAuth();
 
   useEffect(() => {
     if (theme === 'dark') {

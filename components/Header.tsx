@@ -1,11 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { TargetIcon, SunIcon, MoonIcon, UserIcon, LogOutIcon, GoogleIcon } from './icons';
-
-// Define the User type to be used in props
-interface User {
-  name: string;
-  email: string;
-}
+import type { User } from '../types';
 
 // Props for the auth functions
 interface AuthFunctions {

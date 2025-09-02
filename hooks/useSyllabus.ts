@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import type { Subject, Topic, TopicStatus, ProgressLog, SyllabusStats } from '../types';
+import type { Subject, Topic, TopicStatus, ProgressLog, SyllabusStats, User } from '../types';
 import { TopicStatus as TopicStatusEnum } from '../types';
 import { INITIAL_SYLLABUS } from '../constants';
 
@@ -15,25 +15,36 @@ const getInitialState = <T,>(key: string, defaultValue: T): T => {
   return defaultValue;
 };
 
-export const useSyllabus = () => {
-  const [subjects, setSubjects] = useState<Subject[]>(() => getInitialState('syllabus', INITIAL_SYLLABUS));
-  const [progressHistory, setProgressHistory] = useState<ProgressLog[]>(() => getInitialState('progressHistory', []));
+export const useSyllabus = (user: User | null) => {
+  const syllabusKey = useMemo(() => (user ? `syllabus_${user.email}` : 'syllabus_guest'), [user]);
+  const progressHistoryKey = useMemo(() => (user ? `progressHistory_${user.email}` : 'progressHistory_guest'), [user]);
 
+  const [subjects, setSubjects] = useState<Subject[]>(() => getInitialState(syllabusKey, INITIAL_SYLLABUS));
+  const [progressHistory, setProgressHistory] = useState<ProgressLog[]>(() => getInitialState(progressHistoryKey, []));
+
+  // Effect to load data when the user logs in or out
+  useEffect(() => {
+    setSubjects(getInitialState(syllabusKey, INITIAL_SYLLABUS));
+    setProgressHistory(getInitialState(progressHistoryKey, []));
+  }, [user, syllabusKey, progressHistoryKey]);
+
+  // Effect to save syllabus data to the user-specific key when it changes
   useEffect(() => {
     try {
-      window.localStorage.setItem('syllabus', JSON.stringify(subjects));
+      window.localStorage.setItem(syllabusKey, JSON.stringify(subjects));
     } catch (error) {
       console.error('Error saving syllabus to localStorage:', error);
     }
-  }, [subjects]);
+  }, [subjects, syllabusKey]);
 
+  // Effect to save progress history to the user-specific key when it changes
   useEffect(() => {
     try {
-      window.localStorage.setItem('progressHistory', JSON.stringify(progressHistory));
+      window.localStorage.setItem(progressHistoryKey, JSON.stringify(progressHistory));
     } catch (error) {
       console.error('Error saving progress history to localStorage:', error);
     }
-  }, [progressHistory]);
+  }, [progressHistory, progressHistoryKey]);
 
   const updateTopicStatus = useCallback((subjectId: string, topicId: string, newStatus: TopicStatus) => {
     let oldStatus: TopicStatus | null = null;
