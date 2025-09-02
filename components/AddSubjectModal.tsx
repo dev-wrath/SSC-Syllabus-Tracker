@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { iconMap } from './icons';
 
@@ -52,15 +51,15 @@ export const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ isOpen, onClos
       aria-labelledby="add-subject-title"
     >
       <div
-        className="bg-slate-800 rounded-xl shadow-2xl border border-slate-700 w-full max-w-md p-6"
+        className="bg-slate-100 dark:bg-slate-800 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-md p-6"
         onClick={e => e.stopPropagation()}
       >
-        <h2 id="add-subject-title" className="text-2xl font-bold text-slate-100 mb-4">
+        <h2 id="add-subject-title" className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Add New Subject
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="subject-name" className="block text-sm font-medium text-slate-400 mb-2">
+            <label htmlFor="subject-name" className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Subject Name
             </label>
             <input
@@ -68,7 +67,7 @@ export const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ isOpen, onClos
               id="subject-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full bg-slate-700 border border-slate-600 rounded-md px-3 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="w-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md px-3 py-2 text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="e.g., Computer Knowledge"
               required
               autoFocus
@@ -76,10 +75,10 @@ export const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ isOpen, onClos
           </div>
           
           <div className="mb-6">
-            <label className="block text-sm font-medium text-slate-400 mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Choose an Icon
             </label>
-            <div className="grid grid-cols-5 gap-3 bg-slate-700/50 p-3 rounded-lg">
+            <div className="grid grid-cols-5 gap-3 bg-slate-200/50 dark:bg-slate-700/50 p-3 rounded-lg">
               {availableIcons.map(iconKey => {
                 const Icon = iconMap[iconKey];
                 const isSelected = selectedIcon === iconKey;
@@ -88,10 +87,10 @@ export const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ isOpen, onClos
                     key={iconKey}
                     type="button"
                     onClick={() => setSelectedIcon(iconKey)}
-                    className={`flex items-center justify-center aspect-square rounded-lg transition-all duration-200 ${isSelected ? 'bg-cyan-500 ring-2 ring-offset-2 ring-offset-slate-800 ring-cyan-400' : 'bg-slate-600 hover:bg-slate-500'}`}
+                    className={`flex items-center justify-center aspect-square rounded-lg transition-all duration-200 ${isSelected ? 'bg-cyan-500 ring-2 ring-offset-2 ring-offset-slate-100 dark:ring-offset-slate-800 ring-cyan-400' : 'bg-slate-300 dark:bg-slate-600 hover:bg-slate-400 dark:hover:bg-slate-500'}`}
                     aria-label={`Select ${iconKey} icon`}
                   >
-                    <Icon className={`h-6 w-6 ${isSelected ? 'text-white' : 'text-slate-300'}`} />
+                    <Icon className={`h-6 w-6 ${isSelected ? 'text-white' : 'text-slate-600 dark:text-slate-300'}`} />
                   </button>
                 );
               })}
@@ -102,14 +101,14 @@ export const AddSubjectModal: React.FC<AddSubjectModalProps> = ({ isOpen, onClos
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-600 text-slate-200 font-semibold rounded-lg hover:bg-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-800"
+              className="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim() || !selectedIcon}
-              className="px-4 py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-800 disabled:bg-slate-500 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-800 disabled:bg-slate-400 dark:disabled:bg-slate-500 disabled:cursor-not-allowed"
             >
               Save Subject
             </button>

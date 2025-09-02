@@ -1,6 +1,6 @@
-
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { Subject, Topic, TopicStatus, ProgressLog, SyllabusStats } from '../types';
+import { TopicStatus as TopicStatusEnum } from '../types';
 import { INITIAL_SYLLABUS } from '../constants';
 
 const getInitialState = <T,>(key: string, defaultValue: T): T => {
@@ -87,6 +87,39 @@ export const useSyllabus = () => {
     };
     setSubjects(prevSubjects => [...prevSubjects, newSubject]);
   }, []);
+
+  const addTopic = useCallback((subjectId: string, name: string) => {
+    setSubjects(prevSubjects =>
+      prevSubjects.map(subject => {
+        if (subject.id === subjectId) {
+          const newTopic: Topic = {
+            id: `topic-${Date.now()}-${Math.random()}`,
+            name,
+            status: TopicStatusEnum.NotStarted,
+          };
+          return {
+            ...subject,
+            topics: [...subject.topics, newTopic],
+          };
+        }
+        return subject;
+      })
+    );
+  }, []);
+
+  const deleteTopic = useCallback((subjectId: string, topicId: string) => {
+    setSubjects(prevSubjects =>
+      prevSubjects.map(subject => {
+        if (subject.id === subjectId) {
+          return {
+            ...subject,
+            topics: subject.topics.filter(topic => topic.id !== topicId),
+          };
+        }
+        return subject;
+      })
+    );
+  }, []);
   
   const stats: SyllabusStats = useMemo(() => {
     let totalTopics = 0;
@@ -117,5 +150,5 @@ export const useSyllabus = () => {
   }, [subjects]);
 
 
-  return { subjects, updateTopicStatus, addSubject, progressHistory, stats };
+  return { subjects, updateTopicStatus, addSubject, addTopic, deleteTopic, progressHistory, stats };
 };

@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { SubjectCard } from './components/SubjectCard';
@@ -14,9 +13,33 @@ const App: React.FC = () => {
     progressHistory,
     stats,
     addSubject,
+    addTopic,
+    deleteTopic,
   } = useSyllabus();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage.getItem('theme') || 'dark';
+    }
+    return 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+
+  // Mock authentication state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({ name: 'Siddhant' });
 
   const handleAddSubject = (name: string, icon: string) => {
     addSubject(name, icon);
@@ -24,19 +47,26 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 font-sans text-slate-200">
-      <Header />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-200 font-sans transition-colors duration-300">
+      <Header 
+        theme={theme}
+        toggleTheme={toggleTheme}
+        isLoggedIn={isLoggedIn}
+        user={user}
+        onLogin={() => setIsLoggedIn(true)}
+        onLogout={() => setIsLoggedIn(false)}
+      />
       <main className="container mx-auto p-4 md:p-8">
         <Dashboard progressHistory={progressHistory} stats={stats} />
 
         <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-slate-100 border-l-4 border-cyan-400 pl-4">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 border-l-4 border-cyan-500 dark:border-cyan-400 pl-4">
               Syllabus Breakdown
             </h2>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="flex items-center gap-2 px-4 py-2 bg-cyan-500 text-white font-semibold rounded-lg hover:bg-cyan-600 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-50 dark:focus:ring-offset-slate-900"
               aria-label="Add new subject"
             >
               <PlusIcon className="h-5 w-5" />
@@ -48,7 +78,9 @@ const App: React.FC = () => {
               <SubjectCard 
                 key={subject.id} 
                 subject={subject} 
-                updateTopicStatus={updateTopicStatus} 
+                updateTopicStatus={updateTopicStatus}
+                addTopic={addTopic}
+                deleteTopic={deleteTopic}
               />
             ))}
           </div>
