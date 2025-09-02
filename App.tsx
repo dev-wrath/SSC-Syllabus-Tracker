@@ -5,6 +5,7 @@ import { SubjectCard } from './components/SubjectCard';
 import { useSyllabus } from './hooks/useSyllabus';
 import { AddSubjectModal } from './components/AddSubjectModal';
 import { PlusIcon } from './components/icons';
+import { useAuth } from './hooks/useAuth';
 
 const App: React.FC = () => {
   const { 
@@ -25,6 +26,8 @@ const App: React.FC = () => {
     return 'dark';
   });
 
+  const { user, ...authProps } = useAuth();
+
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -37,10 +40,6 @@ const App: React.FC = () => {
 
   const toggleTheme = () => setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
 
-  // Mock authentication state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({ name: 'Siddhant' });
-
   const handleAddSubject = (name: string, icon: string) => {
     addSubject(name, icon);
     setIsModalOpen(false);
@@ -51,10 +50,8 @@ const App: React.FC = () => {
       <Header 
         theme={theme}
         toggleTheme={toggleTheme}
-        isLoggedIn={isLoggedIn}
         user={user}
-        onLogin={() => setIsLoggedIn(true)}
-        onLogout={() => setIsLoggedIn(false)}
+        {...authProps}
       />
       <main className="container mx-auto p-4 md:p-8">
         <Dashboard progressHistory={progressHistory} stats={stats} />
